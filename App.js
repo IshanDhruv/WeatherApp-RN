@@ -1,79 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
-
-const WEATHER_API_KEY = "";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Platform,
+  StatusBar,
+} from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import HomeScreen from "./screens/homeScreen";
+import SearchScreen from "./screens/searchScreen";
 
 export default function App() {
   const [location, setLocation] = useState();
   const [currentWeather, setCurrentWeather] = useState();
+  const [errorMessage, setErrorMessage] = useState();
+  const [unitSystem, setUnitSystem] = useState("metric");
 
-  // useEffect(() => {
-  // load();
-  // }, []);
-
-  async function load() {
-    try {
-      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${WEATHER_API_KEY}`;
-      const response = await fetch(weatherUrl);
-      const result = await response.json();
-      if (response.ok) {
-        setCurrentWeather(result);
-      } else {
-        console.log(result.message);
-      }
-    } catch (error) {}
-  }
-  if (currentWeather) {
-    const {
-      main: { temp },
-    } = currentWeather;
-    return (
-      <View style={styles.container}>
-        <Text>{temp}</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(location) => setLocation(location)}
-          defaultValue={location}
-        />
-        <View style={styles.checkButton}>
-          <Button
-            title="Check "
-            onPress={() => {
-              console.log(location);
-            }}
-          />
-        </View>
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={(location) => setLocation(location)}
-          defaultValue={location}
-        />
-        <View style={styles.checkButton}>
-          <Button
-            title="Check "
-            onPress={() => {
-              console.log(location);
-              load();
-            }}
-          />
-        </View>
-      </View>
-    );
-  }
+  const Stack = createStackNavigator();
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    paddingTop: Platform.OS == "android" ? StatusBar.currentHeight : 0,
   },
   textInput: {
     width: 200,
