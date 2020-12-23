@@ -14,11 +14,6 @@ import HomeScreen from "./screens/homeScreen";
 import SearchScreen from "./screens/searchScreen";
 
 export default function App() {
-  const [location, setLocation] = useState();
-  const [currentWeather, setCurrentWeather] = useState();
-  const [errorMessage, setErrorMessage] = useState();
-  const [unitSystem, setUnitSystem] = useState("metric");
-
   const Stack = createStackNavigator();
   return (
     <NavigationContainer>
@@ -35,16 +30,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingTop: Platform.OS == "android" ? StatusBar.currentHeight : 0,
-  },
-  textInput: {
-    width: 200,
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    textAlign: "center",
-    margin: 40,
-  },
-  checkButton: {
-    width: 90,
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -17,22 +17,40 @@ const SearchScreen = (props) => {
 
   async function load() {
     try {
-      const WEATHER_API_KEY = "";
+      const WEATHER_API_KEY = "a9d7c754be7915021a9c4c79b0da6366";
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${unitSystem}&appid=${WEATHER_API_KEY}`;
-      const response = await fetch(weatherUrl);
+      const response = await fetch(weatherUrl, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
+        },
+      });
       const result = await response.json();
       if (response.ok) {
-        setCurrentWeather(result);
-        props.navigation.navigate("Home", {
-          currentWeather: currentWeather,
-          city: "Bengaluru",
-        });
+        // console.log("1");
+        console.log(result.name);
+        setCurrentWeather((currentWeather) => result);
+        return true;
       } else {
         setErrorMessage(result.message);
         console.log(errorMessage);
+        return false;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
+
+  useEffect(() => {
+    if (currentWeather != null) {
+      props.navigation.navigate("Home", {
+        currentWeather: currentWeather,
+        city: location,
+      });
+    }
+  }, [currentWeather]);
 
   return (
     <View style={styles.screen}>
@@ -46,7 +64,6 @@ const SearchScreen = (props) => {
         <Button
           title="Check "
           onPress={async () => {
-            console.log(location);
             await load();
           }}
         />

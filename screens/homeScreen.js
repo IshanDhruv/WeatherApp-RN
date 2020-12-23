@@ -4,9 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 function HomeScreen({ route, navigation }) {
   const { currentWeather, city } = route.params;
   if (currentWeather != null) {
-    console.log("2");
     const temp = currentWeather.main.temp;
-    console.log(temp);
     return (
       <View style={styles.screen}>
         <Text>{temp} C</Text>
