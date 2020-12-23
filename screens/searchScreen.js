@@ -17,7 +17,7 @@ const SearchScreen = (props) => {
 
   async function load() {
     try {
-      const WEATHER_API_KEY = "a9d7c754be7915021a9c4c79b0da6366";
+      const WEATHER_API_KEY = "";
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${unitSystem}&appid=${WEATHER_API_KEY}`;
       const response = await fetch(weatherUrl);
       const result = await response.json();
