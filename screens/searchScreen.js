@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-community/async-storage";
 import {
   View,
   Text,
@@ -15,9 +16,34 @@ const SearchScreen = (props) => {
   const [errorMessage, setErrorMessage] = useState();
   const [unitSystem, setUnitSystem] = useState("metric");
 
-  async function load() {
+  const saveLocation = async (location) => {
     try {
-      const WEATHER_API_KEY = "a9d7c754be7915021a9c4c79b0da6366";
+      await AsyncStorage.setItem("location", location);
+    } catch (e) {
+      alert("Failed to save the data to the storage");
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    async function readLocation() {
+      try {
+        const temp = await AsyncStorage.getItem("location");
+        if (temp !== null) {
+          console.log(temp);
+          setLocation(temp);
+          await load(temp);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    if (location == null) readLocation();
+  });
+
+  async function load(location) {
+    try {
+      const WEATHER_API_KEY = "";
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${unitSystem}&appid=${WEATHER_API_KEY}`;
       const response = await fetch(weatherUrl, {
         method: "GET",
@@ -27,15 +53,15 @@ const SearchScreen = (props) => {
           "Cache-Control": "no-cache",
         },
       });
+      console.log(response);
       const result = await response.json();
       if (response.ok) {
-        // console.log("1");
         console.log(result.name);
         setCurrentWeather((currentWeather) => result);
+        saveLocation(location);
         return true;
       } else {
-        setErrorMessage(result.message);
-        console.log(errorMessage);
+        console.log(result.message);
         return false;
       }
     } catch (error) {
@@ -64,7 +90,7 @@ const SearchScreen = (props) => {
         <Button
           title="Check "
           onPress={async () => {
-            await load();
+            await load(location);
           }}
         />
       </View>

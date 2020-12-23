@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Platform,
-  StatusBar,
-} from "react-native";
+import { StyleSheet, Platform, StatusBar } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./screens/homeScreen";
@@ -19,7 +12,11 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Search" component={SearchScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerLeft: null }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
