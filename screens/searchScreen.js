@@ -8,6 +8,8 @@ import {
   TextInput,
   Platform,
   StatusBar,
+  Modal,
+  ActivityIndicator,
 } from "react-native";
 
 const SearchScreen = (props) => {
@@ -15,6 +17,7 @@ const SearchScreen = (props) => {
   const [currentWeather, setCurrentWeather] = useState();
   const [errorMessage, setErrorMessage] = useState();
   const [unitSystem, setUnitSystem] = useState("metric");
+  const [isLoading, setIsLoading] = useState(false);
 
   const saveLocation = async (location) => {
     try {
@@ -42,6 +45,7 @@ const SearchScreen = (props) => {
   });
 
   async function load(location) {
+    setIsLoading(true);
     try {
       const WEATHER_API_KEY = "";
       const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${unitSystem}&appid=${WEATHER_API_KEY}`;
@@ -59,6 +63,7 @@ const SearchScreen = (props) => {
         console.log(result.name);
         setCurrentWeather((currentWeather) => result);
         saveLocation(location);
+        setIsLoading(false);
         return true;
       } else {
         console.log(result.message);
@@ -78,6 +83,16 @@ const SearchScreen = (props) => {
     }
   }, [currentWeather]);
 
+  if (isLoading == true)
+    return (
+      <View style={styles.screen}>
+        <ActivityIndicator
+          color="#bc2b78"
+          size="large"
+          style={styles.activityIndicator}
+        />
+      </View>
+    );
   return (
     <View style={styles.screen}>
       <Text>Search for a city</Text>
@@ -118,5 +133,11 @@ const styles = StyleSheet.create({
   },
   checkButton: {
     width: 90,
+  },
+  activityIndicator: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 80,
   },
 });
