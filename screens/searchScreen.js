@@ -8,15 +8,15 @@ import {
   TextInput,
   Platform,
   StatusBar,
-  Modal,
   ActivityIndicator,
 } from "react-native";
+
+import { getWeather } from "../services/weatherService";
 
 const SearchScreen = (props) => {
   const [location, setLocation] = useState();
   const [currentWeather, setCurrentWeather] = useState();
   const [errorMessage, setErrorMessage] = useState();
-  const [unitSystem, setUnitSystem] = useState("metric");
   const [isLoading, setIsLoading] = useState(false);
 
   const saveLocation = async (location) => {
@@ -47,28 +47,14 @@ const SearchScreen = (props) => {
   async function load(location) {
     setIsLoading(true);
     try {
-      const WEATHER_API_KEY = "";
-      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=${unitSystem}&appid=${WEATHER_API_KEY}`;
-      const response = await fetch(weatherUrl, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "Cache-Control": "no-cache",
-        },
-      });
-      console.log(response);
-      const result = await response.json();
-      if (response.ok) {
-        console.log(result.name);
-        setCurrentWeather((currentWeather) => result);
+      console.log(location);
+      const response = await getWeather(location);
+      // console.log(response);
+      if (response != null) {
         saveLocation(location);
-        setIsLoading(false);
-        return true;
-      } else {
-        console.log(result.message);
-        return false;
+        setCurrentWeather(response);
       }
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
